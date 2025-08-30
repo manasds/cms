@@ -1,6 +1,7 @@
 "use client";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+// logout button
 export default function LogoutButton(){
     const router = useRouter()
     console.log("auth-client is " , authClient) 

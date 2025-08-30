@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(uuid())
+  name           String?
+  email          String?   @unique
+  emailVerified Boolean    @default(false)
+  image          String?
+
+  accounts       Account[]
+  sessions       Session[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  // custom field
+  purchases      Purchase[]
+  courses        Course[]
+}
+
+model Account {
+    id                    String    @id @default(uuid())
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id])
+    accountId             String
+    providerId            String
+    accessToken           String?
+    refreshToken          String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    idToken               String?
+    password              String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([providerId])
+    @@map("account")
+}
+
+model Session {
+    id        String   @id @default(uuid())
+    userId    String
+    user      User     @relation(fields: [userId], references: [id])
+    token     String   @unique
+    expiresAt DateTime
+    ipAddress String?
+    userAgent String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([userId])
+    @@index([token])
+    @@map("session")
+}
+
+model Verification {
+    id         String   @id @default(uuid())
+    identifier String
+    value      String
+    expiresAt  DateTime
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([identifier, value])
+    @@map("verification")
+}
+model Purchase {
+  id     Int    @id @default(autoincrement())
+  name   String
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Course {
+  id     Int    @id @default(autoincrement())
+  title  String
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}

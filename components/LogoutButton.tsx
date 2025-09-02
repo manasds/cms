@@ -3,9 +3,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 // logout button
 export default function LogoutButton(){
-    const router = useRouter()
-    console.log("auth-client is " , authClient) 
-    console.log("auth-client is " , authClient) 
+    const router = useRouter();
     async function handlesignout(){
         await authClient.signOut({
         fetchOptions: {
